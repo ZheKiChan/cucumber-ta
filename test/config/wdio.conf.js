@@ -1,6 +1,12 @@
 const reporter = require('cucumber-html-reporter');
 const path = require('path');
 const yargs = require('yargs').argv;
+const cucumberJunitConvert = require('cucumber-junit-convert');
+
+const Junitoptions = {
+    inputJsonFile: path.join(__dirname, '../../test/reports/interaction-on-home-page.json'),
+    outputXmlFile: path.join(__dirname, '../../test/reports/cucumber_report.xml')
+}
 
 const reporterOptions = {
     theme: 'bootstrap',
@@ -168,7 +174,7 @@ exports.config = {
         // <boolean> abort the run on first failure
         failFast: false,
         // <string[]> (type[:path]) specify the output format, optionally supply PATH to redirect formatter output (repeatable)
-        format: ['pretty'],
+        format: ['./node_modules/cucumber-pretty'],
         // <boolean> hide step definition snippets for pending steps
         snippets: true,
         // <boolean> hide source uris
@@ -330,7 +336,7 @@ exports.config = {
      * @param {<Object>} results object containing test results
      */
     onComplete: function() {
-            return reporter.generate(reporterOptions);
+            return reporter.generate(reporterOptions) && cucumberJunitConvert.convert(Junitoptions);
         }
         /**
          * Gets executed when a refresh happens.
